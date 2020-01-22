@@ -56,7 +56,6 @@ function detectFace() {
     setInterval(async () => {
         let fullFaceDescriptions = await faceapi.detectAllFaces(video).withFaceLandmarks().
                                                                         withFaceDescriptors();
-                                                                        // withFaceExpressions();
         fullFaceDescriptions = faceapi.resizeResults(fullFaceDescriptions, displaySize);
         let ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -71,6 +70,5 @@ function detectFace() {
             let drawBox = new faceapi.draw.DrawBox(box, { label: text });
             drawBox.draw(canvas);
         })
-        // faceapi.draw.drawFaceExpressions(canvas, fullFaceDescriptions);
     }, 1000 * 1);
 }
