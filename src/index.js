@@ -1,5 +1,4 @@
 import * as faceapi from 'face-api.js';
-import path from 'path';
 
 let video = document.getElementById('video');
 Promise.all([
