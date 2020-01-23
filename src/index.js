@@ -2,6 +2,7 @@ import * as faceapi from 'face-api.js';
 
 let video = document.getElementById('video');
 let startButton = document.getElementById('startBtn');
+let labels = [];
 
 Promise.all([
     faceapi.loadSsdMobilenetv1Model('./models'),
@@ -19,7 +20,6 @@ startButton.addEventListener('click', () => {
 })
 
 function setupVideo() {
-    startButton.disabled = true;
     navigator.getUserMedia(
         { video: {} },
         stream => video.srcObject = stream,
@@ -31,13 +31,12 @@ function setupVideo() {
 let labeledFaceDescriptors;
 
 async function setupReference() {
-    let labels = ['caesar'];
-    labeledFaceDescriptors = await Promise.all(
-        labels.map(async label => {
-            let imgUrl = `./reference_images/${label}`;
-            let faceDescriptors = [];
-            for (let i = 1; i <= 3; i++) {
-                let img = await faceapi.fetchImage(imgUrl + `_${i}.jpg`);
+    if (labels.size > 1) {
+        labeledFaceDescriptors = await Promise.all(
+            labels.map(async label => {
+                let imgUrl = `./reference_images/${label}.jpg`;
+                let faceDescriptors = [];
+                let img = await faceapi.fetchImage(imgUr);
                 let fullFaceDescription = await faceapi.detectSingleFace(img).
                                                         withFaceLandmarks().
                                                         withFaceDescriptor();
@@ -45,11 +44,13 @@ async function setupReference() {
                     throw new Error(`No face detected for ${label}`);
                 }
                 faceDescriptors.push(fullFaceDescription.descriptor)
-            }
-            startButton.disabled = false;
-            return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
-        })
-    )
+                startButton.disabled = false;
+                return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
+            })
+        )
+    } else {
+        alert('No data available')
+    }
 }
 
 function detectFace() {
