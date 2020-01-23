@@ -1,2 +1,4 @@
 node_modules/
 dist/reference_images/*
+dist/bundle.js
+dist/index.html

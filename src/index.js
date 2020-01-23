@@ -1,33 +1,40 @@
 import * as faceapi from 'face-api.js';
 
 let video = document.getElementById('video');
+let startButton = document.getElementById('startBtn');
+
 Promise.all([
     faceapi.loadSsdMobilenetv1Model('./models'),
     faceapi.loadFaceLandmarkModel('./models'),
     faceapi.loadFaceRecognitionModel('./models'),
     faceapi.loadFaceExpressionModel('./models')
-]).then(startVideo)
+]).then(setupVideo)
 
-function startVideo() {
+video.addEventListener('play', () => {
+    detectFace();
+})
+
+startButton.addEventListener('click', () => {
+    video.play();
+})
+
+function setupVideo() {
+    startButton.disabled = true;
     navigator.getUserMedia(
         { video: {} },
         stream => video.srcObject = stream,
         err => console.error(err)
     )
+    setupReference();
 }
-
-video.addEventListener('play', () => {
-    execute();
-})
 
 let labeledFaceDescriptors;
 
-async function execute() {
+async function setupReference() {
     let labels = ['caesar'];
     labeledFaceDescriptors = await Promise.all(
         labels.map(async label => {
             let imgUrl = `./reference_images/${label}`;
-            // let img = await faceapi.fetchImage(imgUrl);
             let faceDescriptors = [];
             for (let i = 1; i <= 3; i++) {
                 let img = await faceapi.fetchImage(imgUrl + `_${i}.jpg`);
@@ -39,10 +46,10 @@ async function execute() {
                 }
                 faceDescriptors.push(fullFaceDescription.descriptor)
             }
+            startButton.disabled = false;
             return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
         })
     )
-    detectFace();
 }
 
 function detectFace() {
