@@ -19,13 +19,26 @@
 
             canvas {
                 position: absolute;
+                z-index: 1;
+            }
+
+            video {
+                position: absolute;
+                /* background-color: blue; */
+            }
+
+            .buttons {
+                position: relative;
+                left: 500px;
             }
         </style>
     </head>
 
     <body>
         <video id="video" width="720" height="560" muted></video>
-        <input type="button" value="Start Tracking" id="startBtn" disabled>
-        <input type="button" value="Enter Data" id="enterData">
+        <div class="buttons">
+            <input type="button" value="Start Tracking" id="startBtn" disabled>
+            <input type="button" value="Enter Data" id="enterData" disabled>
+        </div>
     </body>
 </html>
